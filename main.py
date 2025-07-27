@@ -8,7 +8,7 @@ client = pymongo.MongoClient("mongodb://localhost:27017/")  # Use Atlas URI if o
 db = client['telegram_mirror']
 collection = db['mirrored_messages']
 
-PUBLIC_CHANNEL_ID = '@YourPublicChannelUsername'
+PUBLIC_CHANNEL_ID = '@Obscall'
 PRIVATE_CHANNEL_ID = -1001234567890
 
 async def mirror_new_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -50,7 +50,7 @@ async def mirror_edit(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Deletion polling & advanced sync routines would check the collection for mappings.
 
 if __name__ == '__main__':
-    application = ApplicationBuilder().token("YOUR-BOT-TOKEN").build()
+    application = ApplicationBuilder().token("8286785222:AAF5cg4HI210JbTyiYlMFvxJTwXnXiC0eRs").build()
     application.add_handler(MessageHandler(filters.Chat(PUBLIC_CHANNEL_ID) & filters.ALL, mirror_new_message))
     application.add_handler(EditedMessageHandler(mirror_edit))
     application.run_polling()
