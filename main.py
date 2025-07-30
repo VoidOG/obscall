@@ -14,14 +14,14 @@ client = pymongo.MongoClient("mongodb+srv://botnet:botnet@cluster0.izjogcb.mongo
 db = client['telegram_mirror']
 collection = db['mirrored_messages']
 
-# Channel config
-PUBLIC_CHANNEL_ID = '@Obscall'
-PRIVATE_CHANNEL_ID = -1002376229093
+# Channel config: REPLACE with your actual numeric chat ID!
+PUBLIC_CHANNEL_ID = -1001572097949  # <- Replace with your channel's numeric ID
+PRIVATE_CHANNEL_ID = -1002376229093 # <- Your private destination channel's ID
 
-# Mirrors new messages from public channel
 async def mirror_new_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.channel_post
     if not msg:
+        logging.warning("No channel_post found in update.")
         return
 
     sent_msg = None
@@ -98,10 +98,10 @@ async def mirror_new_message(update: Update, context: ContextTypes.DEFAULT_TYPE)
     except Exception as e:
         logging.error(f"Failed to mirror message: {e}")
 
-# Mirrors edits of channel messages (text/caption only: Telegram limits media editing)
 async def mirror_edit(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.edited_channel_post
     if not msg:
+        logging.warning("No edited_channel_post found in update.")
         return
 
     mapping = collection.find_one({"public_msg_id": msg.message_id})
@@ -116,21 +116,20 @@ async def mirror_edit(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 text=msg.text or msg.caption,
                 entities=msg.entities or msg.caption_entities
             )
-        # Media edits not supported by Telegram Bot API for channels
+        # Media edit for channels not supported by Bot API
     except Exception as e:
         logging.error(f"Failed to edit message: {e}")
 
-# Bot setup
 if __name__ == '__main__':
     app = ApplicationBuilder().token("8286785222:AAF5cg4HI210JbTyiYlMFvxJTwXnXiC0eRs").build()
 
-    # New channel posts
+    # New posts: filtered on numeric channel ID
     app.add_handler(MessageHandler(
         filters.Chat(PUBLIC_CHANNEL_ID) & filters.UpdateType.CHANNEL_POST,
         mirror_new_message
     ))
 
-    # Edited channel posts
+    # Edited posts
     app.add_handler(MessageHandler(
         filters.Chat(PUBLIC_CHANNEL_ID) & filters.UpdateType.EDITED_CHANNEL_POST,
         mirror_edit
