@@ -4,12 +4,12 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes, EditedMessageHandler
 
 # MongoDB setup
-client = pymongo.MongoClient("mongodb://localhost:27017/")  # Use Atlas URI if on cloud
+client = pymongo.MongoClient("mongodb+srv://botnet:botnet@cluster0.izjogcb.mongodb.net/")  # Use Atlas URI if on cloud
 db = client['telegram_mirror']
 collection = db['mirrored_messages']
 
 PUBLIC_CHANNEL_ID = '@Obscall'
-PRIVATE_CHANNEL_ID = -1001234567890
+PRIVATE_CHANNEL_ID = -1002376229093
 
 async def mirror_new_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.channel_post
